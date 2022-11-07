@@ -69,4 +69,20 @@ public class EmployeeController {
         return R.success(emp);
 
     }
+
+
+    /**
+     * 员工退出
+     * 用户点击页面中的退出按钮，发送请求，请求地址为/employee/logout，请求方式为POST。
+     * 1、清理Sessiong中的用户id
+     * 2、返回结果
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        //清理Sessiong中的用户id
+        request.getSession().removeAttribute("employee");
+        return R.success("退出成功");
+    }
 }
