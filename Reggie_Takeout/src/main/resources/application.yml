@@ -2,7 +2,6 @@ server:
   port: 8080
 spring:
   application:
-    #应用名称，可选
     name: reggie_take_out
   datasource:
     druid:
