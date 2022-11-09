@@ -6,6 +6,7 @@ import com.lwa.entity.Employee;
 import com.lwa.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.freemarker.FreeMarkerProperties;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -39,9 +41,11 @@ public class EmployeeController {
          * 5、查看员工状态，如果已禁用，则返回员工已禁用结果
          * 6、登陆成功，将员工id存入Session并返回登陆成功结果
          */
+        //test
+        System.out.println("11111");
 
         //1、将页面提交的密码password进行md5加密处理
-        System.out.println("11111");
+
         //DigestUtils是一个工具类，里面的方法都使用了static进行修饰
         // md5DigestAsHex里面应该传的是一个数组，因此，我们应该使用password.getBytes()把String转换成数组。
         String password = employee.getPassword();
@@ -91,5 +95,31 @@ public class EmployeeController {
         //清理Session中的用户id
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
+    }
+
+    /**
+     * 新增员工
+     * @param employee
+     * @return
+     */
+    @PostMapping
+    public R<String> save(HttpServletRequest request, @RequestBody Employee employee){
+        log.info("新增员工，员工信息：{}",employee.toString());
+        //设置初始密码为123456，进行md5加密
+        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        //（获取当前系统时间）这条记录的创建时间
+        employee.setCreateTime(LocalDateTime.now());
+        //这条记录的更新时间
+        employee.setUpdateTime(LocalDateTime.now());
+        //获得当前登录用户ID
+        Long empId = (Long)request.getSession().getAttribute("employee");
+        employee.setCreateUser(empId);
+        employee.setUpdateUser(empId);
+
+        //使用异常处理器进行全局异常捕获
+
+        employeeService.save(employee);
+
+        return R.success("新增员工成功");
     }
 }
