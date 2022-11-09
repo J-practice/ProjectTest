@@ -41,12 +41,16 @@ public class EmployeeController {
          */
 
         //1、将页面提交的密码password进行md5加密处理
+        System.out.println("11111");
+        //DigestUtils是一个工具类，里面的方法都使用了static进行修饰
+        // md5DigestAsHex里面应该传的是一个数组，因此，我们应该使用password.getBytes()把String转换成数组。
         String password = employee.getPassword();
         password = DigestUtils.md5DigestAsHex(password.getBytes());//用此方法将获取的密码转为Byte数
 
         //2、根据页面提交的用户名username查询数据库
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getUsername,employee.getUsername());
+        //数据库中Username标记了unique
         Employee emp = employeeService.getOne(queryWrapper);
 
         //3、如果没有查询到则返回登录失败结果
@@ -65,6 +69,9 @@ public class EmployeeController {
         }
 
         //6、登陆成功，将员工id存入Session并返回登陆成功结果
+
+        //参数为true时，若存在会话，则返回该会话，否则新建一个会话；
+        //参数为false时，如存在会话，则返回该会话，否则返回NULL；
         request.getSession().setAttribute("employee",emp.getId());
         return R.success(emp);
 
@@ -74,14 +81,14 @@ public class EmployeeController {
     /**
      * 员工退出
      * 用户点击页面中的退出按钮，发送请求，请求地址为/employee/logout，请求方式为POST。
-     * 1、清理Sessiong中的用户id
+     * 1、清理Session中的用户id
      * 2、返回结果
      * @param request
      * @return
      */
     @PostMapping("/logout")
     public R<String> logout(HttpServletRequest request){
-        //清理Sessiong中的用户id
+        //清理Session中的用户id
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
     }
