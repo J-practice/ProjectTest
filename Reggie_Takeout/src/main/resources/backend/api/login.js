@@ -1,4 +1,5 @@
 function loginApi(data) {
+  console.log(data)
   return $axios({
     'url': '/employee/login',
     'method': 'post',
