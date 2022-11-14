@@ -34,7 +34,7 @@ public class EmployeeController {
     //通过request对象getSession(Session存放用户id)
     public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
         /**
-         *1、将页面提交的密码password进行md5加密处理
+         * 1、将页面提交的密码password进行md5加密处理
          * 2、根据页面提交的用户名username查询数据库
          * 3、如果没有查询到则返回登录失败结果
          * 4、密码对比，如果不一样则返回登陆失败结果
@@ -146,5 +146,20 @@ public class EmployeeController {
         employeeService.page(pageInfo,queryWrapper);
 
         return R.success(pageInfo);
+    }
+
+    /**
+     * 根据id修改员工信息
+     * @param employee
+     * @return
+     */
+    public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
+        log.info(employee.toString());
+
+        Long empId = (Long)request.getSession().getAttribute("employee");
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(empId);
+        employeeService.updateById(employee);
+        return R.success("员工信息修改成功");
     }
 }
