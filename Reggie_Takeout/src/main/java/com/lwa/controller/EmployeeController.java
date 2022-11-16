@@ -108,13 +108,13 @@ public class EmployeeController {
         //设置初始密码为123456，进行md5加密
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         //（获取当前系统时间）这条记录的创建时间
-//        employee.setCreateTime(LocalDateTime.now());
+        employee.setCreateTime(LocalDateTime.now());
         //这条记录的更新时间
-//        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
         //获得当前登录用户ID
-//        Long empId = (Long)request.getSession().getAttribute("employee");
-//        employee.setCreateUser(empId);
-//        employee.setUpdateUser(empId);
+        Long empId = (Long)request.getSession().getAttribute("employee");
+        employee.setCreateUser(empId);
+        employee.setUpdateUser(empId);
 
         //使用异常处理器进行全局异常捕获
 
@@ -153,16 +153,19 @@ public class EmployeeController {
      * @param employee
      * @return
      */
+    @PutMapping
     public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
         log.info(employee.toString());
 
         long id = Thread.currentThread().getId();
         log.info("线程id为：{}",id);
+
         //获得当前登录用户id
-//        Long empId = (Long)request.getSession().getAttribute("employee");
-//        employee.setUpdateTime(LocalDateTime.now());
-//        employee.setUpdateUser(empId);
+        Long empId = (Long)request.getSession().getAttribute("employee");
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(empId);
         employeeService.updateById(employee);
+
         return R.success("员工信息修改成功");
     }
 
@@ -172,7 +175,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/{id}")
-    public R<Employee> getById(@PathVariable Long id){//@PathVariable路径参数
+    public R<Employee> getById(@PathVariable Long id){//@PathVariable路径变量
         log.info("根据id查询员工信息。。。");
         Employee employee = employeeService.getById(id);
         if(employee!=null){
