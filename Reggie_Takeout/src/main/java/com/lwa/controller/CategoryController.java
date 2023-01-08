@@ -74,6 +74,7 @@ public class CategoryController {
     @PutMapping
     public R<String> update(@RequestBody Category category){
         log.info("修改分类信息：{}",category);
+        category.setUpdateTime(LocalDateTime.now());
         categoryService.updateById(category);
         return R.success("分类信息修改成功");
     }

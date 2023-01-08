@@ -43,7 +43,8 @@ public class LoginCheckFilter implements Filter {
                 "/employee/login",//登录
                 "/employee/logout",//退出
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/commom/**"
         };
 
         //2、判断本次请求是否需要处理
